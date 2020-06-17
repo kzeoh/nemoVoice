@@ -1,0 +1,8 @@
+#ignore everything
+*
+
+#except these
+
+!.gitignore
+!workdir
+!src/programs/continous.c
