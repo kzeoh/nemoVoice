@@ -238,6 +238,7 @@ recognize_from_microphone()
     uint8 utt_started, in_speech;
     int32 k;
     char const *hyp;
+	pid_t pid;
 
     if ((ad = ad_open_dev(cmd_ln_str_r(config, "-adcdev"),
                           (int) cmd_ln_float32_r(config,
@@ -266,7 +267,18 @@ recognize_from_microphone()
             hyp = ps_get_hyp(ps, NULL );
             if (hyp != NULL) {
                 printf("%s\n", hyp);
-                fflush(stdout);
+                fflush(stdout);/*adding commands*/
+		if(strcmp(hyp,"show me")==0){
+			pid = fork();
+			if(pid==0){		
+				system("google-chrome");
+				exit(0);
+			}
+		}else if(strcmp(hyp,"small apple")==0){
+			system("pkill --oldest chrome");
+		}else if(strcmp(hyp,"big house")==0){
+			break;
+		}
             }
 
             if (ps_start_utt(ps) < 0)
