@@ -54,6 +54,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
@@ -268,15 +271,15 @@ recognize_from_microphone()
             if (hyp != NULL) {
                 printf("%s\n", hyp);
                 fflush(stdout);/*adding commands*/
-		if(strcmp(hyp,"show me")==0){
+		if(strcmp(hyp,"OPEN GOOGLE CHROME")==0){
 			pid = fork();
 			if(pid==0){		
 				system("google-chrome");
 				exit(0);
 			}
-		}else if(strcmp(hyp,"small apple")==0){
+		}else if(strcmp(hyp,"CLOSE GOOGLE CHROME")==0){
 			system("pkill --oldest chrome");
-		}else if(strcmp(hyp,"big house")==0){
+		}else if(strcmp(hyp,"EXIT")==0){
 			break;
 		}
             }
