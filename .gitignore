@@ -4,5 +4,5 @@
 #except these
 
 !.gitignore
-!adaptation
+!adaptation/
 !src/programs/continous.c
