@@ -57,6 +57,7 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 #include <windows.h>
