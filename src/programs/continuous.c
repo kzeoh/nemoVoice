@@ -111,7 +111,9 @@ print_word_times()
     while (iter != NULL) {
 	int32 sf, ef, pprob;
 	float conf;
-
+	/*
+	 * get segment frame
+	 */
 	ps_seg_frames(iter, &sf, &ef);
 	pprob = ps_seg_prob(iter, NULL, NULL, NULL);
 	conf = logmath_exp(ps_get_logmath(ps), pprob);
