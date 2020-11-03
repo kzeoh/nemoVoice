@@ -103,6 +103,9 @@ static FILE *rawfd;
     static void
 print_word_times()
 {
+    /*
+     * calculate frame rate
+     */
     int frame_rate = cmd_ln_int32_r(config, "-frate");
     ps_seg_t *iter = ps_seg_iter(ps);
     while (iter != NULL) {
