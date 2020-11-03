@@ -74,25 +74,25 @@ static const arg_t cont_args_def[] = {
     POCKETSPHINX_OPTIONS,
     /* Argument file. */
     {"-argfile",
-     ARG_STRING,
-     NULL,
-     "Argument file giving extra arguments."},
+	ARG_STRING,
+	NULL,
+	"Argument file giving extra arguments."},
     {"-adcdev",
-     ARG_STRING,
-     NULL,
-     "Name of audio device to use for input."},
+	ARG_STRING,
+	NULL,
+	"Name of audio device to use for input."},
     {"-infile",
-     ARG_STRING,
-     NULL,
-     "Audio file to transcribe."},
+	ARG_STRING,
+	NULL,
+	"Audio file to transcribe."},
     {"-inmic",
-     ARG_BOOLEAN,
-     "no",
-     "Transcribe audio from microphone."},
+	ARG_BOOLEAN,
+	"no",
+	"Transcribe audio from microphone."},
     {"-time",
-     ARG_BOOLEAN,
-     "no",
-     "Print word times in file transcription."},
+	ARG_BOOLEAN,
+	"no",
+	"Print word times in file transcription."},
     CMDLN_EMPTY_OPTION
 };
 
@@ -100,45 +100,45 @@ static ps_decoder_t *ps;
 static cmd_ln_t *config;
 static FILE *rawfd;
 
-static void
+    static void
 print_word_times()
 {
     int frame_rate = cmd_ln_int32_r(config, "-frate");
     ps_seg_t *iter = ps_seg_iter(ps);
     while (iter != NULL) {
-        int32 sf, ef, pprob;
-        float conf;
+	int32 sf, ef, pprob;
+	float conf;
 
-        ps_seg_frames(iter, &sf, &ef);
-        pprob = ps_seg_prob(iter, NULL, NULL, NULL);
-        conf = logmath_exp(ps_get_logmath(ps), pprob);
-        printf("%s %.3f %.3f %f\n", ps_seg_word(iter), ((float)sf / frame_rate),
-               ((float) ef / frame_rate), conf);
-        iter = ps_seg_next(iter);
+	ps_seg_frames(iter, &sf, &ef);
+	pprob = ps_seg_prob(iter, NULL, NULL, NULL);
+	conf = logmath_exp(ps_get_logmath(ps), pprob);
+	printf("%s %.3f %.3f %f\n", ps_seg_word(iter), ((float)sf / frame_rate),
+		((float) ef / frame_rate), conf);
+	iter = ps_seg_next(iter);
     }
 }
 
-static int
+    static int
 check_wav_header(char *header, int expected_sr)
 {
     int sr;
 
     if (header[34] != 0x10) {
-        E_ERROR("Input audio file has [%d] bits per sample instead of 16\n", header[34]);
-        return 0;
+	E_ERROR("Input audio file has [%d] bits per sample instead of 16\n", header[34]);
+	return 0;
     }
     if (header[20] != 0x1) {
-        E_ERROR("Input audio file has compression [%d] and not required PCM\n", header[20]);
-        return 0;
+	E_ERROR("Input audio file has compression [%d] and not required PCM\n", header[20]);
+	return 0;
     }
     if (header[22] != 0x1) {
-        E_ERROR("Input audio file has [%d] channels, expected single channel mono\n", header[22]);
-        return 0;
+	E_ERROR("Input audio file has [%d] channels, expected single channel mono\n", header[22]);
+	return 0;
     }
     sr = ((header[24] & 0xFF) | ((header[25] & 0xFF) << 8) | ((header[26] & 0xFF) << 16) | ((header[27] & 0xFF) << 24));
     if (sr != expected_sr) {
-        E_ERROR("Input audio file has sample rate [%d], but decoder expects [%d]\n", sr, expected_sr);
-        return 0;
+	E_ERROR("Input audio file has sample rate [%d], but decoder expects [%d]\n", sr, expected_sr);
+	return 0;
     }
     return 1;
 }
@@ -146,7 +146,7 @@ check_wav_header(char *header, int expected_sr)
 /*
  * Continuous recognition from a file
  */
-static void
+    static void
 recognize_from_file()
 {
     int16 adbuf[2048];
@@ -158,59 +158,59 @@ recognize_from_file()
 
     fname = cmd_ln_str_r(config, "-infile");
     if ((rawfd = fopen(fname, "rb")) == NULL) {
-        E_FATAL_SYSTEM("Failed to open file '%s' for reading",
-                       fname);
+	E_FATAL_SYSTEM("Failed to open file '%s' for reading",
+		fname);
     }
-    
+
     if (strlen(fname) > 4 && strcmp(fname + strlen(fname) - 4, ".wav") == 0) {
-        char waveheader[44];
+	char waveheader[44];
 	fread(waveheader, 1, 44, rawfd);
 	if (!check_wav_header(waveheader, (int)cmd_ln_float32_r(config, "-samprate")))
-    	    E_FATAL("Failed to process file '%s' due to format mismatch.\n", fname);
+	    E_FATAL("Failed to process file '%s' due to format mismatch.\n", fname);
     }
 
     if (strlen(fname) > 4 && strcmp(fname + strlen(fname) - 4, ".mp3") == 0) {
 	E_FATAL("Can not decode mp3 files, convert input file to WAV 16kHz 16-bit mono before decoding.\n");
     }
-    
+
     ps_start_utt(ps);
     utt_started = FALSE;
 
     while ((k = fread(adbuf, sizeof(int16), 2048, rawfd)) > 0) {
-        ps_process_raw(ps, adbuf, k, FALSE, FALSE);
-        in_speech = ps_get_in_speech(ps);
-        if (in_speech && !utt_started) {
-            utt_started = TRUE;
-        } 
-        if (!in_speech && utt_started) {
-            ps_end_utt(ps);
-            hyp = ps_get_hyp(ps, NULL);
-            if (hyp != NULL)
-        	printf("%s\n", hyp);
-            if (print_times)
-        	print_word_times();
-            fflush(stdout);
+	ps_process_raw(ps, adbuf, k, FALSE, FALSE);
+	in_speech = ps_get_in_speech(ps);
+	if (in_speech && !utt_started) {
+	    utt_started = TRUE;
+	} 
+	if (!in_speech && utt_started) {
+	    ps_end_utt(ps);
+	    hyp = ps_get_hyp(ps, NULL);
+	    if (hyp != NULL)
+		printf("%s\n", hyp);
+	    if (print_times)
+		print_word_times();
+	    fflush(stdout);
 
-            ps_start_utt(ps);
-            utt_started = FALSE;
-        }
+	    ps_start_utt(ps);
+	    utt_started = FALSE;
+	}
     }
     ps_end_utt(ps);
     if (utt_started) {
-        hyp = ps_get_hyp(ps, NULL);
-        if (hyp != NULL) {
-    	    printf("%s\n", hyp);
-    	    if (print_times) {
-    		print_word_times();
+	hyp = ps_get_hyp(ps, NULL);
+	if (hyp != NULL) {
+	    printf("%s\n", hyp);
+	    if (print_times) {
+		print_word_times();
 	    }
 	}
     }
-    
+
     fclose(rawfd);
 }
 
 /* Sleep for specified msec */
-static void
+    static void
 sleep_msec(int32 ms)
 {
 #if (defined(_WIN32) && !defined(GNUWINCE)) || defined(_WIN32_WCE)
@@ -234,7 +234,7 @@ sleep_msec(int32 ms)
  *        print utterance result;
  *     }
  */
-static void
+    static void
 recognize_from_microphone()
 {
     ad_rec_t *ad;
@@ -242,92 +242,92 @@ recognize_from_microphone()
     uint8 utt_started, in_speech;
     int32 k;
     char const *hyp;
-	pid_t pid;
+    pid_t pid;
 
     if ((ad = ad_open_dev(cmd_ln_str_r(config, "-adcdev"),
-                          (int) cmd_ln_float32_r(config,
-                                                 "-samprate"))) == NULL)
-        E_FATAL("Failed to open audio device\n");
+		    (int) cmd_ln_float32_r(config,
+			"-samprate"))) == NULL)
+	E_FATAL("Failed to open audio device\n");
     if (ad_start_rec(ad) < 0)
-        E_FATAL("Failed to start recording\n");
+	E_FATAL("Failed to start recording\n");
 
     if (ps_start_utt(ps) < 0)
-        E_FATAL("Failed to start utterance\n");
+	E_FATAL("Failed to start utterance\n");
     utt_started = FALSE;
     E_INFO("Ready....\n");
 
     for (;;) {
-        if ((k = ad_read(ad, adbuf, 2048)) < 0)
-            E_FATAL("Failed to read audio\n");
-        ps_process_raw(ps, adbuf, k, FALSE, FALSE);
-        in_speech = ps_get_in_speech(ps);
-        if (in_speech && !utt_started) {
-            utt_started = TRUE;
-            E_INFO("Listening...\n");
-        }
-        if (!in_speech && utt_started) {
-            /* speech -> silence transition, time to start new utterance  */
-            ps_end_utt(ps);
-            hyp = ps_get_hyp(ps, NULL );
-            if (hyp != NULL) {
-                printf("%s\n", hyp);
-                fflush(stdout);/*adding commands*/
+	if ((k = ad_read(ad, adbuf, 2048)) < 0)
+	    E_FATAL("Failed to read audio\n");
+	ps_process_raw(ps, adbuf, k, FALSE, FALSE);
+	in_speech = ps_get_in_speech(ps);
+	if (in_speech && !utt_started) {
+	    utt_started = TRUE;
+	    E_INFO("Listening...\n");
+	}
+	if (!in_speech && utt_started) {
+	    /* speech -> silence transition, time to start new utterance  */
+	    ps_end_utt(ps);
+	    hyp = ps_get_hyp(ps, NULL );
+	    if (hyp != NULL) {
+		printf("%s\n", hyp);
+		fflush(stdout);/*adding commands*/
 		if(strcmp(hyp,"OPEN GOOGLE CHROME")==0){
-			pid = fork();
-			if(pid==0){		
-				system("/opt/pkgs/nemo.chrome/exec -no-sandbox");
-				exit(0);
-			}
+		    pid = fork();
+		    if(pid==0){		
+			system("/opt/pkgs/nemo.chrome/exec -no-sandbox");
+			exit(0);
+		    }
 		}else if(strcmp(hyp,"CLOSE GOOGLE CHROME")==0){
-			system("pkill --oldest chrome");
+		    system("pkill --oldest chrome");
 		}else if(strcmp(hyp,"OPEN IMAGE")==0){
-			pid = fork();
-			if(pid==0){
-				system("/opt/pkgs/nemo.image/exec -f /samba/suzi.jpg -a nemo.image");
-				exit(0);
-			}
+		    pid = fork();
+		    if(pid==0){
+			system("/opt/pkgs/nemo.image/exec -f /samba/suzi.jpg -a nemo.image");
+			exit(0);
+		    }
 		}else if(strcmp(hyp,"CLOSE IMAGE")==0){
-			system("./finish.sh nemo.image");
+		    system("./finish.sh nemo.image");
 		}else if(strcmp(hyp,"OPEN GAME")==0){
-			pid = fork();
-			if(pid==0){
-				system("/opt/pkgs/nemo.webapp-pinchhitter/exec -a nemo.webapp");
-				exit(0);
-			}
+		    pid = fork();
+		    if(pid==0){
+			system("/opt/pkgs/nemo.webapp-pinchhitter/exec -a nemo.webapp");
+			exit(0);
+		    }
 		}else if(strcmp(hyp,"CLOSE GAME")==0){
-			system("./finish.sh nemo.webapp");
+		    system("./finish.sh nemo.webapp");
 		}else if(strcmp(hyp,"OPEN VIDEO")==0){
-			pid = fork();
-			if(pid==0){
-				system("/opt/pkgs/nemo.player/exec -a nemo.player -f /opt/contents/pct/admovie/Korean_foods_#1.mp4");
-				exit(0);
-			}
+		    pid = fork();
+		    if(pid==0){
+			system("/opt/pkgs/nemo.player/exec -a nemo.player -f /opt/contents/pct/admovie/Korean_foods_#1.mp4");
+			exit(0);
+		    }
 		}else if(strcmp(hyp,"CLOSE VIDEO")==0){
-			system("./finish.sh nemo.player");
+		    system("./finish.sh nemo.player");
 		}else if(strcmp(hyp,"OPEN NEWS")==0){
-			pid = fork();
-			if(pid==0){
-				system("/opt/pkgs/nemo.explorer/exec -a nemo.explorer -f /opt/contents/pct/admovie");
-				exit(0);
-			}
+		    pid = fork();
+		    if(pid==0){
+			system("/opt/pkgs/nemo.explorer/exec -a nemo.explorer -f /opt/contents/pct/admovie");
+			exit(0);
+		    }
 		}else if(strcmp(hyp,"CLOSE NEWS")==0){
-			system("./finish.sh nemo.explorer");
+		    system("./finish.sh nemo.explorer");
 		}else if(strcmp(hyp,"EXIT")==0){
-			break;
+		    break;
 		}
-            }
+	    }
 
-            if (ps_start_utt(ps) < 0)
-                E_FATAL("Failed to start utterance\n");
-            utt_started = FALSE;
-            E_INFO("Ready....\n");
-        }
-        sleep_msec(100);
+	    if (ps_start_utt(ps) < 0)
+		E_FATAL("Failed to start utterance\n");
+	    utt_started = FALSE;
+	    E_INFO("Ready....\n");
+	}
+	sleep_msec(100);
     }
     ad_close(ad);
 }
 
-int
+    int
 main(int argc, char *argv[])
 {
     char const *cfg;
@@ -336,28 +336,28 @@ main(int argc, char *argv[])
 
     /* Handle argument file as -argfile. */
     if (config && (cfg = cmd_ln_str_r(config, "-argfile")) != NULL) {
-        config = cmd_ln_parse_file_r(config, cont_args_def, cfg, FALSE);
+	config = cmd_ln_parse_file_r(config, cont_args_def, cfg, FALSE);
     }
 
     if (config == NULL || (cmd_ln_str_r(config, "-infile") == NULL && cmd_ln_boolean_r(config, "-inmic") == FALSE)) {
 	E_INFO("Specify '-infile <file.wav>' to recognize from file or '-inmic yes' to recognize from microphone.\n");
-        cmd_ln_free_r(config);
+	cmd_ln_free_r(config);
 	return 1;
     }
 
     ps_default_search_args(config);
     ps = ps_init(config);
     if (ps == NULL) {
-        cmd_ln_free_r(config);
-        return 1;
+	cmd_ln_free_r(config);
+	return 1;
     }
 
     E_INFO("%s COMPILED ON: %s, AT: %s\n\n", argv[0], __DATE__, __TIME__);
 
     if (cmd_ln_str_r(config, "-infile") != NULL) {
-        recognize_from_file();
+	recognize_from_file();
     } else if (cmd_ln_boolean_r(config, "-inmic")) {
-        recognize_from_microphone();
+	recognize_from_microphone();
     }
 
     ps_free(ps);
@@ -370,7 +370,7 @@ main(int argc, char *argv[])
 #pragma comment(linker,"/entry:mainWCRTStartup")
 #include <windows.h>
 //Windows Mobile has the Unicode main only
-int
+    int
 wmain(int32 argc, wchar_t * wargv[])
 {
     char **argv;
@@ -380,10 +380,10 @@ wmain(int32 argc, wchar_t * wargv[])
 
     argv = malloc(argc * sizeof(char *));
     for (i = 0; i < argc; i++) {
-        wlen = lstrlenW(wargv[i]);
-        len = wcstombs(NULL, wargv[i], wlen);
-        argv[i] = malloc(len + 1);
-        wcstombs(argv[i], wargv[i], wlen);
+	wlen = lstrlenW(wargv[i]);
+	len = wcstombs(NULL, wargv[i], wlen);
+	argv[i] = malloc(len + 1);
+	wcstombs(argv[i], wargv[i], wlen);
     }
 
     //assuming ASCII parameters
