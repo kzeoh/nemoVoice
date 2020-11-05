@@ -1,4 +1,4 @@
-# nemoVoice: 음성인식 인터페이스
+# 중대형 디스플레이를 위한 음성인식 인터페이스 (nemoVoice)
 ## 스타랩 6차년도 과제  
 
 - pocketSphinx API 기반으로 설계  
