@@ -327,7 +327,7 @@ recognize_from_microphone()
 	    utt_started = FALSE;
 	    E_INFO("Ready....\n");
 	}
-	sleep_msec(100);
+	sleep_msec(100); // zzZ
     }
     ad_close(ad);
 }
