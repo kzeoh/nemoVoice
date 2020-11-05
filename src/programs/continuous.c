@@ -286,6 +286,7 @@ recognize_from_microphone()
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE GOOGLE CHROME")==0){
+		    //kill chrome
 		    system("pkill --oldest chrome");
 		}else if(strcmp(hyp,"OPEN IMAGE")==0){
 		    pid = fork();
@@ -340,7 +341,7 @@ main(int argc, char *argv[])
 {
     char const *cfg;
 
-    //parse
+    //parse command line
     config = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
 
     /* Handle argument file as -argfile. */
