@@ -223,7 +223,7 @@ sleep_msec(int32 ms)
 #else
     /* ------------------- Unix ------------------ */
     struct timeval tmo;
-
+    // calculate time interval
     tmo.tv_sec = 0;
     tmo.tv_usec = ms * 1000;
 
