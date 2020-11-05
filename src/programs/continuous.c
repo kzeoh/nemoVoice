@@ -226,7 +226,7 @@ sleep_msec(int32 ms)
     // calculate time interval
     tmo.tv_sec = 0;
     tmo.tv_usec = ms * 1000;
-
+    // select time by tv
     select(0, NULL, NULL, NULL, &tmo);
 #endif
 }
