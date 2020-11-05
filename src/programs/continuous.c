@@ -286,6 +286,7 @@ recognize_from_microphone()
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE GOOGLE CHROME")==0){
+		    //kill chrome
 		    system("pkill --oldest chrome");
 		}else if(strcmp(hyp,"OPEN IMAGE")==0){
 		    pid = fork();
