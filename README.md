@@ -1,8 +1,9 @@
 # nemoVoice: 음성인식 인터페이스
 ## 스타랩 6차년도 과제  
 
-pocketSphinx API 기반으로 설계  
+- pocketSphinx API 기반으로 설계  
 참고 링크: [pocketSphinx](https://github.com/cmusphinx/pocketsphinx)
+- Nemo 플랫폼에서 동작
 
 ### 실행방법
 1. pocketSphinx API 설치 후 nemoVoice 인터페이스를 pocketSphinx 설치 경로에 붙여넣기
