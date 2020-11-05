@@ -367,6 +367,7 @@ main(int argc, char *argv[])
 	recognize_from_microphone();
     }
 
+    // free ps
     ps_free(ps);
     cmd_ln_free_r(config);
 
