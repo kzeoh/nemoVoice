@@ -339,6 +339,7 @@ main(int argc, char *argv[])
 {
     char const *cfg;
 
+    //parse
     config = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
 
     /* Handle argument file as -argfile. */
