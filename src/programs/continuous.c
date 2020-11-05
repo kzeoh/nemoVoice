@@ -177,7 +177,7 @@ recognize_from_file()
     if (strlen(fname) > 4 && strcmp(fname + strlen(fname) - 4, ".mp3") == 0) {
 	E_FATAL("Can not decode mp3 files, convert input file to WAV 16kHz 16-bit mono before decoding.\n");
     }
-
+    // ps start
     ps_start_utt(ps);
     utt_started = FALSE;
 
