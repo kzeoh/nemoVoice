@@ -269,6 +269,7 @@ recognize_from_microphone()
 	in_speech = ps_get_in_speech(ps);
 	if (in_speech && !utt_started) {
 	    utt_started = TRUE;
+	    // Append message
 	    E_INFO("Listening...\n");
 	}
 	if (!in_speech && utt_started) {
