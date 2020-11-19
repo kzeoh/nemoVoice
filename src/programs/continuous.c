@@ -280,45 +280,55 @@ recognize_from_microphone()
 		printf("%s\n", hyp);
 		fflush(stdout);/*adding commands*/
 		if(strcmp(hyp,"OPEN GOOGLE CHROME")==0){
+			E_INFO("OPEN GOOGLE CHROME\n");
 		    pid = fork();
 		    if(pid==0){		
 			system("/opt/pkgs/nemo.chrome/exec -no-sandbox");
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE GOOGLE CHROME")==0){
+			E_INFO("CLOSE GOOGLE CHROME\n");
 		    //kill chrome
 		    system("pkill --oldest chrome");
 		}else if(strcmp(hyp,"OPEN IMAGE")==0){
+			E_INFO("OPEN IMAGE\n");
 		    pid = fork();
 		    if(pid==0){
 			system("/opt/pkgs/nemo.image/exec -f /samba/suzi.jpg -a nemo.image");
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE IMAGE")==0){
+			E_INFO("CLOSE IMAGE\n");
 		    system("./finish.sh nemo.image");
 		}else if(strcmp(hyp,"OPEN GAME")==0){
+			E_INFO("OPEN GAME\n");
 		    pid = fork();
 		    if(pid==0){
 			system("/opt/pkgs/nemo.webapp-pinchhitter/exec -a nemo.webapp");
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE GAME")==0){
+			E_INFO("CLOSE GAME\n");
 		    system("./finish.sh nemo.webapp");
 		}else if(strcmp(hyp,"OPEN VIDEO")==0){
+			E_INFO("OPEN VIDEO\n");
 		    pid = fork();
 		    if(pid==0){
 			system("/opt/pkgs/nemo.player/exec -a nemo.player -f /opt/contents/pct/admovie/Korean_foods_#1.mp4");
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE VIDEO")==0){
+			E_INFO("CLOSE VIDEO\n");
 		    system("./finish.sh nemo.player");
 		}else if(strcmp(hyp,"OPEN NEWS")==0){
+			E_INFO("OPEN NEWS\n");
 		    pid = fork();
 		    if(pid==0){
 			system("/opt/pkgs/nemo.explorer/exec -a nemo.explorer -f /opt/contents/pct/admovie");
 			exit(0);
 		    }
 		}else if(strcmp(hyp,"CLOSE NEWS")==0){
+			E_INFO("CLOSE NEWS\n");
 		    system("./finish.sh nemo.explorer");
 		}else if(strcmp(hyp,"EXIT")==0){
 		    break;
